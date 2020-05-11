@@ -161,3 +161,38 @@ There are a few relevant variables of you type GO ENV...
     *notes:* maybe I'm ok with going to Go Proxy for public libraries, but for my company packages, I want it to go direct. So I will list the base URL for those packages (ie http://bitbucket.org/anthem) 
     GONOPROXY: 
     GONOSUMDB:
+
+One way you can test this is to run an Athens server because it will log (set to debug logging level) and you'll see if Athens is getting engaged by the go tooling or not because you're going direct ... 
+
+go.sum file is for durability ... it nsures you're running the same code no matter where it's pulled from... gives you the hash of the code itself and the hash of the go.mod file
+
+Theoretically you could take code, change it, and attach the same version tag as it had before ... meaning two different codes bearing the same version tag ... but if these codes are different, they will have different checsum hashes
+
+When a module is written, your go tooling will create a checksum ... it will check the sum against Googl'es checksum DB ... 
+
+It's critically important that the library developer is the first to check in a checksum with the checksum DB... that checksum is only logged the first time that module is written to go.mod
+
+You must save your module file and sum file to get yoru durability
+
+What if your module is a private module? You can go direct, or to Athens... but you don't want Athens or your computer to go check the ChecksumDB... so you can set the environmental variable GONOSUM to make sure you don't validate checksums for those domains...
+
+Since your checksum can't be validated against the checksum DB, it will check against the one you do have.
+
+-----
+
+Vendoring is a great idea in Bill's opinion
+
+If you own all the code, then there's a couple other things you can do...
+
+You coudl even log from inside in a dependency if you needed to... you could hack your vendored version ... but if you do go mod tidy, the tool would want to replace it...
+
+If you do a go get to upgrade on your dependencies ...
+
+When it's reasonable and practical, I want you to vendor 
+
+Some people consider your Google proxy and Athens to be vendoring ... if you can guarantee durability with your Athens server, knowing it'll never go down (auto scaling etc) then you could say it's vendored ... but if you lost network connection, then you don't
+
+Specific Rules for when to use global vairables: 
+1. Intialization of the variable can't depend on the order
+2. The intializaiton cannot depend on the configuration
+3. The only source code allowed to touch this variable is the code the variable is defined in
