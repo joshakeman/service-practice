@@ -196,3 +196,44 @@ Specific Rules for when to use global vairables:
 1. Intialization of the variable can't depend on the order
 2. The intializaiton cannot depend on the configuration
 3. The only source code allowed to touch this variable is the code the variable is defined in
+
+expvar is a metrics package in Go 
+
+Super cool way of handling notes...
+
+At the top of all main.go ... have a block of notes... not TODO's throughout the codebase
+
+Avoid packages that contain things but don't provide (things like utils, helpers, etc)
+
+-----> DAY 2 <-----
+
+We don't want to use singletons for our logger
+
+Since a package is an API, a self-contained unit of code, I really want to make sure every package has its own type system.
+
+Everything we're doing is a data transformation at the end of the day.
+
+When it coems to data flowing in you have two choices... ask for data based on what it is (concrete type) or what it does (interface type) ... this is concrete vs polymorphic
+
+Functions should never pre-decouple data for the caller
+
+the return types for all of our APIs should be concrete values always
+
+This would mean avoiding empty interfaces on the return (exception can be marshalling/unmarshalling situations)
+
+What is the bear minimum a handler function shoudl do? 
+1. Get the request, 
+2. validate teh request,
+3.  know which business layer function to call, and if there is no error, 
+4. handle the response.
+
+WHat handlers shouldn't do...
+1. Handle the error
+2. Logging
+3. Specialized marshalling and validation
+
+We really want the code in the handler down to the bear minimum so we get consistency in teh codebase and experience of the API for the user
+
+---> Q. What is load shedding???
+
+
