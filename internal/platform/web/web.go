@@ -19,13 +19,15 @@ type Handler func(ctx context.Context, w http.ResponseWriter, r *http.Request, p
 type App struct {
 	*httptreemux.TreeMux
 	shutdown chan os.Signal
+	mw       []Middleware
 }
 
 // NewApp creates an App value that handle a set of routes for the application.
-func NewApp(shutdown chan os.Signal) *App {
+func NewApp(shutdown chan os.Signal, mw ...Middleware) *App {
 	app := App{
 		TreeMux:  httptreemux.New(),
 		shutdown: shutdown,
+		mw:       mw,
 	}
 	return &app
 }
@@ -38,12 +40,19 @@ func (a *App) SignalShutdown() {
 
 // Handle is our mechanism for mounting Handlers for a given HTTP verb and path
 // pair, this makes for really easy, convenient routing.
-func (a *App) Handle(verb, path string, handler Handler) {
+func (a *App) Handle(verb, path string, handler Handler, mw ...Middleware) {
 
 	f := func(w http.ResponseWriter, r *http.Request, params map[string]string) {
 
-		health(r.Context(), w, r, params)
+		// BOILERPLATE
 
+		if err := handler(r.Context(), w, r, params); err != nil {
+			// ???
+			return
+		}
+
+		//BOILERPLATE
+		// Log Request
 	}
 
 	a.TreeMux.Handle(verb, path, f)

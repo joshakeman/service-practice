@@ -236,4 +236,55 @@ We really want the code in the handler down to the bear minimum so we get consis
 
 ---> Q. What is load shedding???
 
+Remember, the platform layer is NOT ALLOWED to log
+
+One of the reasons not to put info in context is because if it's not there you have only one choice ... if there's something that's supposed to be in the context and it's not there, you have one choice: you need to shut down the service. You have an integrity issue, something really bad has happened.
+
+So, we add lines of code after each time we pull values from context we have these lines about killing that code:
+
+```go
+v, ok := ctx.Value(web.KeyValues).(*web.Values)
+			if !ok {
+				return web.NewShutdownError("web value missing from context")
+            }
+```
+
+If you asked Rob Pike what errors are in Go... he'd say errors are just values, so they can be anything you want them to be. 
+
+The way Bill thinks of errors is the same way he thinks of channels ... channels provide a signalling semantic... where one goroutine can signal another goroutine about some event and provide info related to that signalling ... the thing about channel level signalling is that it's horizontal... 
+
+I think of error handling in Go as signaling as well... 
+But it's not horizontal signaling... it's signaling that goes up...
+
+YOu're going to have a set of functions (call path) going down ... what we're doing on the call path is creating a pipe... what we can do at any given time is signal an error value up the call path to where eventuallysomebody needs tohandle the signal going up. So I think about error handling in Go as signaling values up a callpath to where eventually some function needs to decide I'm going to handle the signal.
+When you think about it as signaling what happens is you realize that errors are just values that can be anythign you want them to be, then we can define differen error values that themselves signal differetn information and signal different reactions... signal different layers of trust, signal different context
+
+The error interface allows us to send any concrete value that we want back up (error is the only interface type I'm happy returning)
+
+No other function necessarily needs to handle errors. All they need to do is capture the error, annotate the error, send it back up the pipe.
+
+We want every layer here to annotate the layer going up so when it's logged it has the full context needed.
+
+The job of afunction is to check is there an error in the pipe? No problem, let me annotate it, we'll send up a new one... to where the middleware says is there an error in the pipe? Great, let me work on that.
+
+There's only two places in the app right now wehre we should see logging... the logging middleware an the error handling middleware
+
+If anyone else wants to do logging I'm going to have an engineering discussion about that.
+
+I want to set up this error handling pipe ...
+
+One of the things we need to be concerned about on error handling is not leaking information that can harm us, but still givin the caller enough context to understand why a particular call failed. Some of this context would be nice to code into the code for things that we know are obvious. When we're not sure, maybe send that 500 with no information.
+
+We want to define an error type that the application trusts...
+
+If the error middleware sees an error value of this type come up through the pipe, it will trust whatevers in there to be sent to the caller directly...
+
+If we don't know what the error value is we assume none of it is really safe and we'll send a 500.
+
+I want an error value that signals system shutdown ... not all layers of code have the same rights to shutdown... technically that right should only exist at the application layer ... but still in platform or business layer we nay have situations where we want to SIGNAL shutdown
+
+The error handler should capture all those shutdown signals and evaluate, at the business level, whether we want to honor that shutdown request.
+
+
+
 
