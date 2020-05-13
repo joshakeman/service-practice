@@ -308,5 +308,7 @@ Integration tests are at the command level, starting at the route all the way do
 *Bill Opinion*: I like verbosity for tests whether they succeed or fail ... some people only want a verbose output when the test fails
 *Bill Opinion*: I'm not a fan of bringing in third party libraries for tests. The only exception is a package from Google that does deep compares
 
+*Bill Opinion*: Each package should have its own type system ... you shouldn't have a common type system.
+
 
 
