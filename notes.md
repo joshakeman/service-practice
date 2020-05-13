@@ -285,6 +285,28 @@ I want an error value that signals system shutdown ... not all layers of code ha
 
 The error handler should capture all those shutdown signals and evaluate, at the business level, whether we want to honor that shutdown request.
 
+Panics should only be handled within the package that's causing the panic.
+
+-----> Day 3 <------
+
+Questions:
+    1. Can you talk about what you mean when you say the web framework level?
+    2. Can you expain again how you think about layers, why three, etc.
+    3. Why compile multiple binaries?
+    4. What if the version of Go in docker is different than the one on my computer?
+    5. What is connection pooling in DBs?
+    6. Syntax for query across multiple environments?
+
+YOu want bear minimum abstarction layers for datrabases
+
+Unit tests should run against their own database running in its own container ... mocking DB is useless imo
+
+Unit tests for Go are defined within the context of the package (folder) which is an individually compiled physical unit of code in Go
+
+Integration tests are at the command level, starting at the route all the way down and back out
+
+*Bill Opinion*: I like verbosity for tests whether they succeed or fail ... some people only want a verbose output when the test fails
+*Bill Opinion*: I'm not a fan of bringing in third party libraries for tests. The only exception is a package from Google that does deep compares
 
 
 
