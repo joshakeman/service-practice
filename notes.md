@@ -296,6 +296,7 @@ Questions:
     4. What if the version of Go in docker is different than the one on my computer?
     5. What is connection pooling in DBs?
     6. Syntax for query across multiple environments?
+    7. Should my log have a target vairable?
 
 YOu want bear minimum abstarction layers for datrabases
 
