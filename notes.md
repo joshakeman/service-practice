@@ -297,6 +297,7 @@ Questions:
     5. What is connection pooling in DBs?
     6. Syntax for query across multiple environments?
     7. Should my log have a target vairable?
+    8. What is data validation exactly?
 
 YOu want bear minimum abstarction layers for datrabases
 
@@ -310,6 +311,8 @@ Integration tests are at the command level, starting at the route all the way do
 *Bill Opinion*: I'm not a fan of bringing in third party libraries for tests. The only exception is a package from Google that does deep compares
 
 *Bill Opinion*: Each package should have its own type system ... you shouldn't have a common type system.
+
+Local testing best practices around cloud ... alot of clouds let you run a local version of their DB ... use that and containerize
 
 
 
