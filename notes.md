@@ -316,5 +316,7 @@ Local testing best practices around cloud ... alot of clouds let you run a local
 
 Always have a file named after teh package for developers to exlpore what the package is doing...
 
+Adding line for ting
+
 
 
