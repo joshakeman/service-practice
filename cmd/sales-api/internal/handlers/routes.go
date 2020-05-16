@@ -12,7 +12,7 @@ import (
 // API ...
 func API(build string, shutdown chan os.Signal, log *log.Logger) *web.App {
 	// tm := httptreemux.New()
-	app := web.NewApp(shutdown, mid.Logger)
+	app := web.NewApp(shutdown, mid.Logger(log))
 
 	app.Handle(http.MethodGet, "/test", health)
 
